@@ -13,10 +13,16 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Conversation {
+  id       Int    @id @default(autoincrement())
+  owner    String
+  receiver String
+
+  messagers Message[]
+}
+
 model Message {
   id         Int       @id @default(autoincrement())
-  senderId   String
-  receiverId String
   time       DateTime  @default(now())
   message    String
   reference  Int?
@@ -26,6 +32,9 @@ model Message {
   editedTime DateTime?
 
   attachments Attachment[]
+
+  conversationId Int
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
 }
 
 model Attachment {
