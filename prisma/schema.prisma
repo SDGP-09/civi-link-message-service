@@ -14,11 +14,13 @@ datasource db {
 }
 
 model Conversation {
-  id       Int    @id @default(autoincrement())
-  owner    String
-  receiver String
+  id        Int    @id @default(autoincrement())
+  sender    String
+  recipient String
 
   messagers Message[]
+
+  @@unique([sender, recipient])
 }
 
 model Message {

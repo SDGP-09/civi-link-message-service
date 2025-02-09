@@ -13,11 +13,11 @@ export class UserJwtStrategy extends PassportStrategy(Strategy, 'conversationJwt
 
     async validate(token: string){
         const validated: string = 'Validating API call here';
-        console.log("Reached here");
+        // console.log("Reached here");
         if (validated){
             const payload = jwt.decode(token);
 
-            console.log("token");
+            // console.log("token");
             if (payload) {
                     return {userid: payload.sub}
 
