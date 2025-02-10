@@ -1,7 +1,11 @@
 import { Module } from '@nestjs/common';
-import { AttachmentController } from './attachment.controller';
+
+import { AttachmentService } from './attachment.service';
+import {PrismaModule} from "../prisma/prisma.module";
 
 @Module({
-  controllers: [AttachmentController]
+  imports: [PrismaModule],
+  controllers: [],
+  providers: [AttachmentService]
 })
 export class AttachmentModule {}

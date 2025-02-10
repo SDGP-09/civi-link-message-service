@@ -13,8 +13,8 @@ export class ConversationService {
             console.log("Service reached");
             const conversationId = await this.prisma.conversation.create({
                 data:{
-                    sender: sender,
-                    recipient: recipient,
+                    sender,
+                    recipient,
                 },
                 select: {
                     id: true,
@@ -33,8 +33,8 @@ export class ConversationService {
                         const existingId = await this.prisma.conversation.findUnique({
                             where: {
                                 sender_recipient: {
-                                    sender: sender,
-                                    recipient: recipient,
+                                    sender,
+                                    recipient,
                                 },
                             },
                             select: {
@@ -96,6 +96,19 @@ export class ConversationService {
             throw error;
         }
 
+    }
+
+
+
+    retrieveAllConversations(user:string){
+        try{
+
+
+
+
+        }catch (error){
+
+        }
     }
 
 
