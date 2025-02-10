@@ -1,4 +1,4 @@
-import {Injectable, InternalServerErrorException} from '@nestjs/common';
+import {ForbiddenException, Injectable, InternalServerErrorException, NotFoundException, Post} from '@nestjs/common';
 import {PrismaService} from "../prisma/prisma.service";
 
 import {PrismaClientKnownRequestError} from '@prisma/client/runtime/library';
@@ -11,7 +11,7 @@ export class ConversationService {
     async addConversation(sender: string, recipient: string){
         try{
             console.log("Service reached");
-            const conversationId: {id: number} = await this.prisma.conversation.create({
+            const conversationId = await this.prisma.conversation.create({
                 data:{
                     sender: sender,
                     recipient: recipient,
@@ -59,6 +59,44 @@ export class ConversationService {
 
 
 
+    async removeConversation(user:string, id: number){
+
+        try{
+            const conversation = await this.prisma.conversation.findUniqueOrThrow({
+                where: {
+                    id,
+                },
+                select: {
+                    sender:true,
+                }
+
+            })
+
+
+
+            if(user !== conversation.sender){
+                throw new ForbiddenException('Unauthorised !');
+            }
+
+
+            await this.prisma.conversation.delete({
+                where:  {
+                    id,
+                },
+            })
+
+
+        }catch(error){
+            if (error instanceof PrismaClientKnownRequestError){
+                if (error.code === 'P2025'){
+                    throw new NotFoundException("Conversation not found");
+                }
+            }
+
+            throw error;
+        }
+
+    }
 
 
 }
