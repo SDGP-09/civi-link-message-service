@@ -2,6 +2,7 @@ import {ForbiddenException, Injectable, InternalServerErrorException, NotFoundEx
 import {PrismaService} from "../prisma/prisma.service";
 
 import {PrismaClientKnownRequestError} from '@prisma/client/runtime/library';
+import {ConversationInterface} from "./interfaces";
 
 @Injectable()
 export class ConversationService {
@@ -61,6 +62,8 @@ export class ConversationService {
 
     async removeConversation(user:string, id: number){
 
+
+
         try{
             const conversation = await this.prisma.conversation.findUniqueOrThrow({
                 where: {
@@ -100,14 +103,77 @@ export class ConversationService {
 
 
 
-    retrieveAllConversations(user:string){
+    async retrieveAllConversations(user:string, last?: number, flag: boolean = false){
+
+
+        // type ConversationMessages = {
+        //     id: number,
+        //     sender: string,
+        //     updatedAt: Date | null,
+        //     unreadMessageCount?: number | null,
+        // };
+
+
+        let filter:any = {
+            sender: user,
+        }
+
+        if(last != undefined && !flag){
+            filter.id = {lt: last}
+        }
+
+        if(last !== undefined  && flag){
+            filter.id = {gte: last}
+        }
+
+
+
+
+        let query:any = {
+            where: filter,
+            orderBy: {
+                updatedAt: 'desc',
+            },
+            select: {
+                id: true,
+                sender: true,
+                updatedAt: true
+            },
+
+        }
+
+
+        if(!flag){
+            query.take= 50;
+
+        }
+
+
         try{
 
+            const conversations: ConversationInterface[] | null = await this.prisma.conversation.findMany(query);
 
+            if (conversations){
+
+                for (const conversation of conversations){
+                    conversation.unreadMessageCount = await this.prisma.message.count({
+                        where: {
+                            conversationId: conversation.id,
+                            viewed: false,
+                        },
+                    });
+
+
+
+                }
+
+            }
+
+            return conversations;
 
 
         }catch (error){
-
+            throw error;
         }
     }
 

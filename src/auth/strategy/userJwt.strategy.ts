@@ -1,9 +1,9 @@
 import {PassportStrategy} from "@nestjs/passport";
 import {Strategy} from "passport-http-bearer";
-import {UnauthorizedException} from "@nestjs/common";
+import {Injectable, UnauthorizedException} from "@nestjs/common";
 import * as jwt from 'jsonwebtoken';
 
-
+@Injectable()
 export class UserJwtStrategy extends PassportStrategy(Strategy, 'conversationJwt'){
 
     constructor(){
@@ -12,11 +12,19 @@ export class UserJwtStrategy extends PassportStrategy(Strategy, 'conversationJwt
     }
 
     async validate(token: string){
-        const validated: string = 'Validating API call here';
+
+        // console.log('STRATEGY: token =', token);
+
+        //Validating API call here';
+        const validated: boolean = true;
+
         // console.log("Reached here");
+
+
         if (validated){
             const payload = jwt.decode(token);
 
+            // console.log('STRATEGY: payload =', payload);
             // console.log("token");
             if (payload) {
                     return {userid: payload.sub}

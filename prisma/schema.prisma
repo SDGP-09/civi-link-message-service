@@ -14,9 +14,10 @@ datasource db {
 }
 
 model Conversation {
-  id        Int    @id @default(autoincrement())
+  id        Int       @id @default(autoincrement())
   sender    String
   recipient String
+  updatedAt DateTime?
 
   messagers Message[]
 
