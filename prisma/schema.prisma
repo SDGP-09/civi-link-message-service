@@ -34,7 +34,8 @@ model Message {
   viewedTime DateTime?
   editedTime DateTime?
 
-  attachments Attachment[]
+  correspondingId Int?
+  attachments     Attachment[]
 
   conversationId Int
   conversation   Conversation @relation(fields: [conversationId], references: [id])

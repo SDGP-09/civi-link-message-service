@@ -11,7 +11,7 @@ export class ConversationService {
 
     async addConversation(sender: string, recipient: string){
         try{
-            console.log("Service reached");
+            // console.log("Service reached");
             const conversationId = await this.prisma.conversation.create({
                 data:{
                     sender,
