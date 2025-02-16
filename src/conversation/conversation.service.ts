@@ -3,11 +3,15 @@ import {PrismaService} from "../prisma/prisma.service";
 
 import {PrismaClientKnownRequestError} from '@prisma/client/runtime/library';
 import {ConversationInterface} from "./interfaces";
+import {MessageService} from "../message/message.service";
 
 @Injectable()
 export class ConversationService {
 
-    constructor(private prisma: PrismaService){}
+    constructor(
+        private prisma: PrismaService,
+
+    ){}
 
     async addConversation(sender: string, recipient: string){
         try{
@@ -172,6 +176,37 @@ export class ConversationService {
             return conversations;
 
 
+        }catch (error){
+            throw error;
+        }
+    }
+
+
+
+
+    async loadConversation(conversationId: number, last?: number){
+
+        const where: any = {conversationId};
+
+        if (last){
+            where.id = {lt: last}
+        }
+
+        const query = {
+            where,
+            orderBy: {
+                time: 'asc' as 'asc',
+            },
+            take: 50,
+        }
+
+
+
+
+
+        try{
+            return this.prisma.message.findMany(query);
+            
         }catch (error){
             throw error;
         }
