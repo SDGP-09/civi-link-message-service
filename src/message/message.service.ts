@@ -113,7 +113,7 @@ export class MessageService {
 
         }catch (error){
             // Suggest a suitable error...
-            throw new ForbiddenException()
+            throw new ForbiddenException();
 
         }
 
