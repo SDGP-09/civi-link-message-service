@@ -1,10 +1,11 @@
-import { Module } from '@nestjs/common';
+import {forwardRef, Module} from '@nestjs/common';
 import {ConversationModule} from "../conversation/conversation.module";
 import {SocketGateway} from "./socket-gateway";
 import {UserWsJwtGuard} from "../auth/guard";
 
 @Module({
-    imports:[ConversationModule],
-    providers:[SocketGateway, UserWsJwtGuard]
+    imports:[forwardRef(() => ConversationModule)],
+    providers:[SocketGateway, UserWsJwtGuard],
+    exports: [SocketGateway],
 })
 export class SocketConnectorModule {}

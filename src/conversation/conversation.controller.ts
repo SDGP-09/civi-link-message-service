@@ -4,6 +4,7 @@ import {UserJwtGuard} from "../auth/guard";
 import {UserDto, IdDto} from "./ConversationDTO";
 import {ConversationService} from "./conversation.service";
 import {LimitationDto} from "./ConversationDTO/limitation.dto";
+import {ConversationSelectionDto} from "./ConversationDTO/conversationSelection.dto";
 
 
 @Controller('conversation')
@@ -34,14 +35,28 @@ export class ConversationController {
         return this.conversationService.removeConversation(sender, id);
     }
 
+    // @UseGuards(UserJwtGuard)
+    // @Post('allConversations')
+    // @HttpCode(200)
+    // getAllConversations(@GetUser() user, @Body() data: LimitationDto){
+    //
+    //     const userId: string = user.userid;
+    //     const last: number | undefined = data.lastConversationId;
+    //
+    //     return this.conversationService.retrieveAllConversations(userId);
+    // }
+
+
     @UseGuards(UserJwtGuard)
     @Post('allConversations')
     @HttpCode(200)
-    getAllConversations(@GetUser() user, @Body() data: LimitationDto){
+    getConversation(@Body() body: ConversationSelectionDto){
 
-        const userId: string = user.userid;
-        const last: number | undefined = data.lastConversationId;
+        const conversationId: number = body.conversationId;
 
-        return this.conversationService.retrieveAllConversations(userId);
+        return this.conversationService.loadConversation(conversationId);
+
     }
+
+
 }

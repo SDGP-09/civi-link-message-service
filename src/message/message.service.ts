@@ -3,6 +3,7 @@ import {PrismaService} from "../prisma/prisma.service";
 import {Attachment, Conversation} from "@prisma/client";
 import {MessageStructure} from "./interfaces";
 import {AttachmentService} from "../attachment/attachment.service";
+import {SocketGateway} from "../socket-connector/socket-gateway";
 
 @Injectable()
 export class MessageService {
@@ -10,7 +11,11 @@ export class MessageService {
 
 
 
-    constructor(private prisma: PrismaService, private attachmentService: AttachmentService){}
+    constructor(
+        private prisma: PrismaService,
+        private attachmentService: AttachmentService,
+        private gateway: SocketGateway
+    ){}
 
 
     async sendMessage(message: string, conversationId: number, attachments?: string[], reference: number = -1){
@@ -96,16 +101,17 @@ export class MessageService {
                         // suggest an error
                     }
                 }
+                await this.prisma.$executeRaw`
+                UPDATE Conversation 
+                SET updatedAt = NOW() 
+                WHERE id IN (${conversationId}, ${recipientConversation.id})`;
+
+                this.gateway.sendMessage(recipientConversation, newMessageTwo);
 
             }catch (CreationError){
                 // suggest an error62
             }
 
-
-            await this.prisma.$executeRaw`
-                UPDATE Conversation 
-                SET updatedAt = NOW() 
-                WHERE id IN (${conversationId}, ${recipientConversation.id})`;
 
 
 
@@ -123,9 +129,7 @@ export class MessageService {
     }
 
 
-    // retrieveMessage(){
-    //
-    // }
+
 
 
 

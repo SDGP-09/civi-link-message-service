@@ -122,7 +122,7 @@ export class ConversationService {
             sender: user,
         }
 
-        if(last != undefined && !flag){
+        if(last !== undefined && !flag){
             filter.id = {lt: last}
         }
 
@@ -206,7 +206,7 @@ export class ConversationService {
 
         try{
             return this.prisma.message.findMany(query);
-            
+
         }catch (error){
             throw error;
         }
