@@ -6,17 +6,19 @@ import {
     WebSocketGateway
 } from "@nestjs/websockets";
 import {Socket} from 'socket.io';
-import {Injectable, UseGuards} from "@nestjs/common";
+import {Injectable, UseFilters, UseGuards} from "@nestjs/common";
 import {UserWsJwtGuard} from "../auth/guard";
 import {ConversationService} from "../conversation/conversation.service";
 import * as jwt from 'jsonwebtoken';
 import {ConversationInterface} from "../conversation/interfaces";
 import {Conversation, Message} from "@prisma/client";
 import {ConversationsInitDto, MoreMessagesDto, SortConversationDto} from "./socketDTO";
+import {WsHttpExceptionFilter} from "./filter";
 
 @Injectable()
 @WebSocketGateway(3002, {cors: {origin: '*'}})
 @UseGuards(UserWsJwtGuard)
+@UseFilters(WsHttpExceptionFilter)
 export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect{
 
     constructor(private conversation: ConversationService){}
