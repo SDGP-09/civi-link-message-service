@@ -11,13 +11,16 @@ async function bootstrap() {
       })
   );
 
-  const port = parseInt(process.env.PORT || '3000', 10);
-  await app.listen(port);
+  await app.listen(process.env.PORT ?? 3050);
+  
+ 
+  
+    const port = process.env.PORT || '3050';
 
-
-    const eurekaHost = process.env.EUREKA_HOST || 'localhost';
+    const eurekaHost = process.env.EUREKA_HOST || 'civilink-eureka-server-api-service.development.svc.cluster.local';
     const eurekaPort = parseInt(process.env.EUREKA_PORT || '8761', 10);
 
     registerWithEureka(eurekaHost, eurekaPort, port);
+
 }
 bootstrap();
