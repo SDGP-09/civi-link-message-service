@@ -22,7 +22,7 @@ jobs:
 
       - name: Build Docker Image
         run: |
-          docker build --platform linux/amd64 -t lasithdev/civilink-massenger:${{github.sha}} .
+          docker build --no-cache --platform linux/amd64 -t lasithdev/civilink-massenger:${{github.sha}} .
           docker tag lasithdev/civilink-massenger:${{github.sha}} lasithdev/civilink-massenger:latest
 
       - name: Push Docker Image to Docker hub
