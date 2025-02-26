@@ -1,21 +1,24 @@
-// src/utils/eureka.registration.ts
 import { Eureka } from 'eureka-js-client';
 
-export function registerWithEureka(eurekaHost: string, eurekaPort: number, appPort: number) {
-    // Create a Eureka client instance
+export function registerWithEureka(eurekaHost: string, eurekaPort: number, port: number) {
     const client = new Eureka({
         instance: {
-            app: 'message-service',         // The name to register under
-            instanceId: `message-service:${appPort}`,
-            hostName: 'localhost',          // or your actual hostname
+            app: 'civilink-massenger',
+            instanceId: `civilink-massenger-${port}`,
+            hostName: 'civilink-massenger-service.development.svc.cluster.local',
             ipAddr: '127.0.0.1',
+            statusPageUrl: `http://civilink-massenger-service.development.svc.cluster.local:${port}/actuator/info`,
+            healthCheckUrl: `http://civilink-massenger-service.development.svc.cluster.local:${port}/actuator/health`,
+            homePageUrl: `http://civilink-massenger-service.development.svc.cluster.local:${port}`,
             port: {
-                '$': appPort,
+                $: port,
                 '@enabled': true,
             },
-            vipAddress: 'message-service',  // optional VIP name
-            statusPageUrl: `http://localhost:${appPort}/info`,  // optional
-            healthCheckUrl: `http://localhost:${appPort}/health`, // optional
+            vipAddress: 'civilink-massenger',
+            dataCenterInfo: {
+                '@class': 'com.netflix.appinfo.InstanceInfo$DefaultDataCenterInfo',
+                name: 'MyOwn',
+            },
         },
         eureka: {
             host: eurekaHost,
@@ -24,11 +27,11 @@ export function registerWithEureka(eurekaHost: string, eurekaPort: number, appPo
         },
     });
 
-    // Optional: set log level to debug for troubleshooting
-    client.logger.level('debug');
-
-    // Start Eureka registration
     client.start((error) => {
-        console.log(error || 'Eureka registration complete');
+        if (error) {
+            console.error('Eureka registration failed:', error);
+        } else {
+            console.log('Successfully registered with Eureka');
+        }
     });
 }
