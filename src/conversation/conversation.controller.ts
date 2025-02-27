@@ -48,7 +48,7 @@ export class ConversationController {
 
 
     @UseGuards(UserJwtGuard)
-    @Post('allConversations')
+    @Post('getConversation')
     @HttpCode(200)
     getConversation(@Body() body: ConversationSelectionDto){
 
