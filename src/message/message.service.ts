@@ -106,7 +106,33 @@ export class MessageService {
                 SET updatedAt = NOW() 
                 WHERE id IN (${conversationId}, ${recipientConversation.id})`;
 
+                this.prisma.conversation.update({
+                    where: {
+                        id: conversationId,
+                    },
+                    data: {
+                        unseenCount: conversation.unseenCount + 1,
+                        lastMessage: message,
+                    }
+                });
+
+                this.prisma.conversation.update({
+                    where: {
+                        id: recipientConversation.id,
+                    },
+                    data: {
+                        unseenCount: conversation.unseenCount + 1,
+                        lastMessage: message,
+                    }
+                })
+
+
+
                 this.gateway.sendMessage(recipientConversation, newMessageTwo);
+
+
+
+
 
             }catch (CreationError){
                 // suggest an error62

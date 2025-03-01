@@ -202,9 +202,28 @@ export class ConversationService {
 
 
 
-
-
         try{
+
+            await this.prisma.conversation.update({
+                where: {
+                    id: conversationId,
+                },
+                data: {
+                    unseenCount: 0,
+                }
+            });
+
+            await this.prisma.message.updateMany({
+                where: {
+                    conversationId: conversationId,
+                },
+                data: {
+                    viewed: true,
+                    viewedTime: new Date()
+                }
+            })
+
+            
             return this.prisma.message.findMany(query);
 
         }catch (error){

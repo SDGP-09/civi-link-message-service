@@ -14,10 +14,12 @@ datasource db {
 }
 
 model Conversation {
-  id        Int       @id @default(autoincrement())
-  sender    String
-  recipient String
-  updatedAt DateTime?
+  id          Int       @id @default(autoincrement())
+  sender      String
+  recipient   String
+  updatedAt   DateTime?
+  unseenCount Int       @default(0)
+  lastMessage String?
 
   messagers Message[]
 
