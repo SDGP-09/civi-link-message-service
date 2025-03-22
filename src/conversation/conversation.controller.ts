@@ -35,16 +35,16 @@ export class ConversationController {
         return this.conversationService.removeConversation(sender, id);
     }
 
-    // @UseGuards(UserJwtGuard)
-    // @Post('allConversations')
-    // @HttpCode(200)
-    // getAllConversations(@GetUser() user, @Body() data: LimitationDto){
-    //
-    //     const userId: string = user.userid;
-    //     const last: number | undefined = data.lastConversationId;
-    //
-    //     return this.conversationService.retrieveAllConversations(userId);
-    // }
+    @UseGuards(UserJwtGuard)
+    @Post('allConversations')
+    @HttpCode(200)
+    getAllConversations(@GetUser() user, @Body() data: LimitationDto){
+
+        const userId: string = user.userid;
+        const last: number | undefined = data.lastConversationId;
+
+        return this.conversationService.retrieveAllConversations(userId);
+    }
 
 
     @UseGuards(UserJwtGuard)

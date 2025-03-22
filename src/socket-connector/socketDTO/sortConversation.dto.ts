@@ -6,7 +6,7 @@ export class SortConversationDto {
 
 
 
-    @IsNotEmpty()
+    @IsOptional()
     @Type(() => Number) //Zero args and should return a type
     @IsInt()
     last : number;
