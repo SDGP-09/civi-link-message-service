@@ -1,4 +1,5 @@
-import {Body, Controller, HttpCode, Post, UseGuards} from '@nestjs/common';
+import {Body, Controller, HttpCode, Post, UploadedFiles, UseGuards, UseInterceptors} from '@nestjs/common';
+import { FilesInterceptor } from '@nestjs/platform-express';
 import {UserJwtGuard} from "../auth/guard";
 import {GetUser} from "../auth/decorator";
 import {SendMessageDto} from "./MessageDTO";
@@ -12,26 +13,28 @@ export class MessageController {
 
     @UseGuards(UserJwtGuard)
     @Post('sendMessage')
+    @UseInterceptors(FilesInterceptor('attachments'))
     @HttpCode(200)
-    sendMessage(@GetUser() user, @Body() data: SendMessageDto) {
-        const { message, conversationId, attachments, reference } = data;
+    sendMessage(@GetUser() user, @Body() data: SendMessageDto, @UploadedFiles() files: Express.Multer.File[]) {
+        const { message, conversationId, reference } = data;
 
 
-        if (!attachments && reference === undefined) {
+
+        if (!files.length && reference === undefined) {
             return this.messageService.sendMessage(message, conversationId);
         }
 
 
-        if (attachments && reference === undefined) {
-            return this.messageService.sendMessage(message, conversationId, attachments);
+        if (files.length && reference === undefined) {
+            return this.messageService.sendMessage(message, conversationId, files);
         }
 
 
-        if (!attachments && reference !== undefined) {
+        if (!files.length && reference !== undefined) {
             return this.messageService.sendMessage(message, conversationId, undefined, reference);
         }
 
 
-        return this.messageService.sendMessage(message, conversationId, attachments, reference);
+        return this.messageService.sendMessage(message, conversationId, files, reference);
     }
 }

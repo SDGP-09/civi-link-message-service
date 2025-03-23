@@ -6,9 +6,10 @@ import {PrismaService} from "../prisma/prisma.service";
 import {PrismaModule} from "../prisma/prisma.module";
 import {AttachmentModule} from "../attachment/attachment.module";
 import {SocketConnectorModule} from "../socket-connector/socket-connector.module";
+import {StorageModule} from "../storage/storage.module";
 
 @Module({
-  imports: [PrismaModule, AttachmentModule, forwardRef(() => SocketConnectorModule)],
+  imports: [PrismaModule, AttachmentModule, forwardRef(() => SocketConnectorModule), StorageModule],
   controllers: [MessageController],
   providers: [MessageService]
 })

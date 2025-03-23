@@ -18,6 +18,8 @@ export class ConversationController {
 
         const sender:string = user.userid;
         const recipient:string = data.recipient;
+        //For now think that the add Conversation method is also expecting a multipart file as the third parameter
+        //And also thing that it is coming in the body of the request so can you update this method in order to accommodate this?
 
         // console.log(sender);
 

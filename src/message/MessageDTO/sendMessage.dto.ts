@@ -13,8 +13,6 @@ export class SendMessageDto{
     @IsInt()
     conversationId: number;
 
-    @IsOptional()
-    attachments?: string[];
 
     @IsOptional()
     @Type(() => Number)

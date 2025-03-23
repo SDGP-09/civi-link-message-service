@@ -4,6 +4,7 @@ import {Attachment, Conversation} from "@prisma/client";
 import {MessageStructure} from "./interfaces";
 import {AttachmentService} from "../attachment/attachment.service";
 import {SocketGateway} from "../socket-connector/socket-gateway";
+import {StorageService} from "../storage/storage.service";
 
 @Injectable()
 export class MessageService {
@@ -14,11 +15,25 @@ export class MessageService {
     constructor(
         private prisma: PrismaService,
         private attachmentService: AttachmentService,
-        private gateway: SocketGateway
+        private gateway: SocketGateway,
+        private storageService: StorageService
     ){}
 
 
-    async sendMessage(message: string, conversationId: number, attachments?: string[], reference: number = -1){
+    async sendMessage(message: string, conversationId: number, files?: Express.Multer.File[], reference: number = -1){
+
+        let attachments: string[] = [];
+        if (files && files.length > 0) {
+            for (const file of files) {
+
+                const fileName = await this.storageService.uploadFile(file.buffer);
+                attachments.push(fileName);
+            }
+        }
+
+
+
+
 
         try {
             const conversation: Conversation = await this.prisma.conversation.findUniqueOrThrow({
